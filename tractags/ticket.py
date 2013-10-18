@@ -225,8 +225,9 @@ class TicketTagProvider(DefaultTagProvider):
         rw_cursor.execute("""
             DELETE FROM tags
              WHERE tagspace=%%s
-               AND NOT EXISTS (SELECT * FROM ticket AS tkt WHERE %s=tags.name)
-            """ % db.cast('tkt.id', 'text'),
+               AND NOT EXISTS (SELECT * FROM ticket AS tkt
+                               WHERE tkt.id=%s%s)
+            """ % (db.cast('tags.name', 'int'), ignore),
             (self.realm,))
 
         self.log.debug('ENTER_TAG_DB_CHECKOUT')
