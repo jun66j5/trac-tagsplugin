@@ -58,7 +58,7 @@ def tag_changes(env, resource):
          ORDER BY time DESC
     """, (resource.realm, to_unicode(resource.id)))
     return [(to_datetime(row[0]), row[1], row[2], row[3])
-            for row in cursor.fetchall()]
+            for row in cursor]
 
 def tag_frequency(env, realm, filter=None, db=None):
     """Return tags and numbers of their occurrence."""
