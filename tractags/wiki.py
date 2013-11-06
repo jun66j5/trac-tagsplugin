@@ -118,8 +118,8 @@ class WikiTagInterface(TagTemplateProvider):
                             tags_history[0][0] > page_history[i]['date']:
                         old_tags = split_into_tags(tags_history[0][2] or '')
                         new_tags = split_into_tags(tags_history[0][3] or '')
-                        added = new_tags - old_tags
-                        removed = old_tags - new_tags
+                        added = sorted(new_tags - old_tags)
+                        removed = sorted(old_tags - new_tags)
                         comment = tag(tag.strong(_("Tags")), ' ')
                         if added:
                             comment.append(tag_(ngettext("%(tags)s added",
