@@ -14,6 +14,7 @@ from trac.util.datefmt import to_datetime, utc
 from trac.util.text import to_unicode
 
 from tractags.compat import to_datetime, to_utimestamp
+from tractags.util import split_into_tags
 
 
 # Public functions (not yet)
@@ -197,8 +198,8 @@ def resource_tags(env, resource, db=None, when=None):
                        "ORDER BY time DESC LIMIT 1",
                        (resource.realm, id, when))
         row = cursor.fetchone()
-        if row:
-            for tag in filter(None, row[0].split()):
+        if row and row[0]:
+            for tag in split_into_tags(row[0]):
                 yield tag
 
 # Internal functions
