@@ -203,20 +203,25 @@ class WikiTagInterface(TagTemplateProvider):
                 new_tags = split_into_tags(tags_history[3] or '')
                 added = sorted(new_tags - old_tags)
                 removed = sorted(old_tags - new_tags)
-                comment = tag(tag.strong(_("Tags")), ' ')
+                added_frag = removed_frag = delim = tag()
+                label_frag = tag.strong(_("Tags"))
                 if added:
-                    comment.append(tag_(ngettext("%(tags)s added",
-                                                 "%(tags)s added",
-                                                 len(added)),
-                                        tags=tag.em(', '.join(added))))
+                    added_frag = ngettext("%(tags)s added", "%(tags)s added",
+                                          len(added))
+                    added_frag = tag_(added_frag,
+                                      tags=tag.em(', '.join(added)))
                 # TRANSLATOR: How to delimit added and removed tags.
                 if added and removed:
-                    comment.append(_("; "))
+                    delim = _("; ")
                 if removed:
-                    comment.append(tag_(ngettext("%(tags)s removed",
-                                                 "%(tags)s removed",
-                                                 len(removed)),
-                                        tags=tag.em(', '.join(removed))))
+                    removed_frag = ngettext("%(tags)s removed",
+                                            "%(tags)s removed", len(removed))
+                    removed_frag = tag_(removed_frag,
+                                        tags=tag.em(', '.join(removed)))
+                # TRANSLATOR: Tags change record composition.
+                comment = tag_("%(tags)s %(added)s%(delim)s%(removed)s",
+                               tags=label_frag, delim=delim,
+                               added=added_frag, removed=removed_frag)
                 url = req.href(resource.realm, resource.id,
                                version=page_history['version'],
                                tags_version=to_utimestamp(date))
