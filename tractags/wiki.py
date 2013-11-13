@@ -131,10 +131,10 @@ class WikiTagInterface(TagTemplateProvider):
                         if added and removed:
                             comment.append(_("; "))
                         if removed:
-                            comment.append(tag_(ngettext("%(tags)s removed",
-                                                         "%(tags)s removed",
-                                                         len(removed)),
-                                                tags=tag.em(', '.join(removed))))
+                            comment.append(tag_(
+                                ngettext("%(tags)s removed",
+                                         "%(tags)s removed", len(removed)),
+                                tags=tag.em(', '.join(removed))))
                         date = tags_history[0][0]
                         history.append({
                             'version': '*',
@@ -247,7 +247,8 @@ class WikiTagInterface(TagTemplateProvider):
 
         # TRANSLATOR: Header label text for tag list at wiki page bottom.
         insert = tag.ul(class_='tags')(tag.li(_("Tags"), class_='header'), li)
-        return stream | Transformer('//div[contains(@class,"wikipage")]').after(insert)
+        return stream | (Transformer('//div[contains(@class,"wikipage")]')
+                         .after(insert))
 
     def _update_tags(self, req, page):
         tag_system = TagSystem(self.env)
@@ -292,14 +293,15 @@ class TagWikiSyntaxProvider(Component):
 
     # IWikiSyntaxProvider methods
     def get_wiki_syntax(self):
-        yield (r'''\[tag(?:ged)?:(?P<tlpexpr>'.*'|".*"|\S+)\s*(?P<tlptitle>[^\]]+)?\]''',
+        yield (r'''\[tag(?:ged)?:'''
+               r'''(?P<tlpexpr>'.*'|".*"|\S+)\s*(?P<tlptitle>[^\]]+)?\]''',
                lambda f, n, m: self._format_tagged(f,
                                     m.group('tlpexpr'),
                                     m.group('tlptitle')))
         yield (r'''(?P<tagsyn>tag(?:ged)?):(?P<texpr>(?:'.*?'|".*?"|\S)+)''',
-               lambda f, n, m: self._format_tagged(f,
-                                    m.group('texpr'),
-                                    '%s:%s' % (m.group('tagsyn'), m.group('texpr'))))
+               lambda f, n, m: self._format_tagged(
+                   f, m.group('texpr'),
+                   '%s:%s' % (m.group('tagsyn'), m.group('texpr'))))
 
     def get_link_resolvers(self):
         return []
